@@ -1,31 +1,15 @@
-# import xml.etree.ElementTree as ET
 import numpy as np
 
 
 class Data(object):
     """Class to get data in required format"""
 
-    def __init__(self, data_file='UD_English-EWT/'):
+    def __init__(self, data_file='./test.conllu'):
         self.data_file = data_file
-        # self.data_file = [train_file, test_file, dev_file]
 
         self.vocab = []
         self.postags = []
         self.deprels = []
-        # self.init_lists()
-
-    # def init_lists(self):
-    #     root = ET.parse(self.data_dir + 'stats.xml').getroot()
-
-    #     for child in root:
-    #         if child.tag == 'tags':
-    #             for gchild in child:
-    #                 self.postags.append(gchild.attrib['name'])
-    #         elif child.tag == 'deps':
-    #             for gchild in child:
-    #                 self.deps.append(gchild.attrib['name'])
-    #     self.postags.append('_')
-    #     self.deps.append('_')
 
     def get_file_data(self):
         data_list = []
@@ -46,7 +30,7 @@ class Data(object):
                             self.postags.append(attr[3])
                         if attr[7] not in self.deprels:
                             self.deprels.append(attr[7])
-                        
+
                         # Make dictionary
                         ddicts.append({'id': attr[0], 'word': self.vocab.index(attr[2]),
                                        'pos': self.postags.index(attr[3]), 'deprel': self.deps.index(attr[7])})
@@ -58,7 +42,6 @@ class Data(object):
         return data_list
 
     def get_transitions(self, word_list, edge_list):
-        # print('word list {0}, edge_list {1}'.format(len(word_list), len(edge_list)))
         sigma = ['0']
         beta = [word['id'] for word in word_list]
 
@@ -107,8 +90,8 @@ class Data(object):
 
         return np.array(configs), np.array(trans)
 
-    def get_data(self, train=0):
-        train_list = self.get_file_data(self.data_file[train])
+    def get_data(self):
+        train_list = self.get_file_data()
         train_data = []
         for sentence in train_list:
             word_list, edge_list = sentence
